@@ -42,9 +42,11 @@ class ConvenientClient[Result[_]](delegate: BaseClient[Result]) {
 
 object Main extends App {
 
-  val response1: Response[Json] = new ConvenientClient(new Client1).get("http://example.com", classOf[Json])
+  val client1 = new ConvenientClient(new Client1)
+  val client3 = new ConvenientClient(new Client3)
+  val client2 = new ConvenientClient(new Client2)
 
-  val response2: String = new ConvenientClient(new Client2).get("http://example.com", classOf[String])
-
-  val response3: Response[Either[String, Json]] = new ConvenientClient(new Client3).get("http://example.com", classOf[Json])
+  val response1: Response[Json]                 = client1.get("http://example.com", classOf[Json])
+  val response2: Json                           = client2.get("http://example.com", classOf[Json])
+  val response3: Response[Either[String, Json]] = client3.get("http://example.com", classOf[Json])
 }
