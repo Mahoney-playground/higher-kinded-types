@@ -15,7 +15,11 @@ class Client1 {
   def execute[T](request: Request[T]): Response[T] = ???
 }
 
+class Client2(delegate: Client1) {
+  def execute[T](request: Request[T]): T = delegate.execute(request).value
+}
+
 object Main extends App {
-  val client = new Client1()
-  val response: Response[Json] = client.execute(new Request("http://example.com", Method.GET, classOf[Json]))
+  val client = new Client2(new Client1)
+  val response: Json = client.execute(new Request("http://example.com", Method.GET, classOf[Json]))
 }
