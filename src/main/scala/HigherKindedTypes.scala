@@ -2,7 +2,7 @@ class Json
 
 object Method {
   val GET = new Method("GET")
-  val PUT = new Method("GET")
+  val DELETE = new Method("DELETE")
 }
 
 class Method(val name: String)
@@ -21,10 +21,12 @@ class Client2(delegate: Client1) {
 
 class ConvenientClient1(delegate: Client1) {
   def get[T](uri: String, entityType: Class[T]) = delegate.execute(new Request(uri, Method.GET, classOf[Json]))
+  def delete[T](uri: String, entityType: Class[T]) = delegate.execute(new Request(uri, Method.DELETE, classOf[Json]))
 }
 
 class ConvenientClient2(delegate: Client2) {
   def get[T](uri: String, entityType: Class[T]) = delegate.execute(new Request(uri, Method.GET, classOf[Json]))
+  def delete[T](uri: String, entityType: Class[T]) = delegate.execute(new Request(uri, Method.DELETE, classOf[Json]))
 }
 
 object Main extends App {
