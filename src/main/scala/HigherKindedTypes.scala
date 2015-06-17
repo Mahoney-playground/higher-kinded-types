@@ -27,6 +27,14 @@ class Client2(delegate: Client1) extends BaseClient[Client2.Is] {
   def execute[T](request: Request[T]): T = delegate.execute(request).value
 }
 
+object Client3 {
+  type ResponseEitherString[T] = Response[Either[String, T]]
+}
+
+class Client3 extends BaseClient[Client3.ResponseEitherString] {
+  def execute[T](request: Request[T]): Response[Either[String, T]] = ???
+}
+
 class ConvenientClient[Result[_]](delegate: BaseClient[Result]) {
   def get[T](uri: String, entityType: Class[T]) = delegate.execute(new Request(uri, Method.GET, classOf[Json]))
   def delete[T](uri: String, entityType: Class[T]) = delegate.execute(new Request(uri, Method.DELETE, classOf[Json]))
@@ -38,7 +46,8 @@ object Main extends App {
   val response1: Response[Json] = convenientClient1.get("http://example.com", classOf[Json])
 
   val convenientClient2 = new ConvenientClient(new Client2(new Client1))
-  val response: Json = convenientClient2.get("http://example.com", classOf[Json])
+  val response2: Json = convenientClient2.get("http://example.com", classOf[Json])
 
-
+  val convenientClient3 = new ConvenientClient(new Client3)
+  val response3: Response[Either[String, Json]] = convenientClient3.get("http://example.com", classOf[Json])
 }
