@@ -7,31 +7,35 @@ object Method {
 
 class Method(val name: String)
 
-class Request[T](uri: String, method: Method, entityType: Class[T])
+class Request[T](
+  uri: String,
+  method: Method,
+  entityType: Class[T]
+)
 
-class Response[T](val status: Int, val value: T)
+class Response[T](
+  val status: Int,
+  val value: T
+)
+
+object Types {
+  type Is[T] = T
+  type ResponseEitherString[T] = Response[Either[String, T]]
+}
 
 trait BaseClient[Result[_]] {
   def execute[T](request: Request[T]): Result[T]
 }
 
 class Client1 extends BaseClient[Response] {
-  override def execute[T](request: Request[T]): Response[T] = ???
+  def execute[T](request: Request[T]): Response[T] = ???
 }
 
-object Client2 {
-  type Is[T] = T
-}
-
-class Client2(delegate: Client1 = new Client1) extends BaseClient[Client2.Is] {
+class Client2(delegate: Client1 = new Client1) extends BaseClient[Types.Is] {
   def execute[T](request: Request[T]): T = delegate.execute(request).value
 }
 
-object Client3 {
-  type ResponseEitherString[T] = Response[Either[String, T]]
-}
-
-class Client3 extends BaseClient[Client3.ResponseEitherString] {
+class Client3 extends BaseClient[Types.ResponseEitherString] {
   def execute[T](request: Request[T]): Response[Either[String, T]] = ???
 }
 
