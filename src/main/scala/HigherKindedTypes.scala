@@ -23,10 +23,14 @@ class ConvenientClient1(delegate: Client1) {
   def get[T](uri: String, entityType: Class[T]) = delegate.execute(new Request(uri, Method.GET, classOf[Json]))
 }
 
+class ConvenientClient2(delegate: Client2) {
+  def get[T](uri: String, entityType: Class[T]) = delegate.execute(new Request(uri, Method.GET, classOf[Json]))
+}
+
 object Main extends App {
   val client = new Client2(new Client1)
   val response: Json = client.execute(new Request("http://example.com", Method.GET, classOf[Json]))
 
-  val convenientClient1 = new ConvenientClient1(new Client1)
-  val response2: Response[Json] = convenientClient1.get("http://example.com", classOf[Json])
+  val convenientClient2 = new ConvenientClient2(new Client2(new Client1))
+  val response2: Json = convenientClient2.get("http://example.com", classOf[Json])
 }
