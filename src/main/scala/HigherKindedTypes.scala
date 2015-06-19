@@ -19,7 +19,7 @@ class Response[T](
 )
 
 object Types {
-  type Is[T] = T
+  type Bare[T] = T
   type ResponseEitherString[T] = Response[Either[String, T]]
 }
 
@@ -31,7 +31,7 @@ class Client1 extends BaseClient[Response] {
   def execute[T](request: Request[T]): Response[T] = ???
 }
 
-class Client2(delegate: Client1 = new Client1) extends BaseClient[Types.Is] {
+class Client2(delegate: Client1 = new Client1) extends BaseClient[Types.Bare] {
   def execute[T](request: Request[T]): T = delegate.execute(request).value
 }
 
