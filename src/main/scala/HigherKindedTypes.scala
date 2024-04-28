@@ -20,7 +20,8 @@ class Response[T](
 
 object Types {
   type Bare[T] = T
-  type ResponseEitherString[T] = Response[Either[String, T]]
+  type StringOr[T] = Either[String, T]
+  type ResponseStringOr[T] = Response[StringOr[T]]
 }
 
 trait BaseClient[Result[_]] {
@@ -35,7 +36,7 @@ class Client2(delegate: Client1 = new Client1) extends BaseClient[Types.Bare] {
   def execute[T](request: Request[T]): T = delegate.execute(request).value
 }
 
-class Client3 extends BaseClient[Types.ResponseEitherString] {
+class Client3 extends BaseClient[Types.ResponseStringOr] {
   def execute[T](request: Request[T]): Response[Either[String, T]] = ???
 }
 
